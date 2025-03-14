@@ -2,7 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Cosmetics Store" Height="600" Width="1000" 
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        >
     <Window.Resources>
         <Style x:Key="NavButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
@@ -30,6 +31,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
     </Window.Resources>
 
     <Grid>
@@ -126,6 +128,47 @@
                         <TextBlock Grid.Row="1" Text="Products will be displayed here" 
                                    FontSize="18" Foreground="#FF6D6D6D" 
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <!--<Image x:Name="imgCleanser" HorizontalAlignment="Left" Height="112" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="117"/>-->
+                        <ListBox x:Name="lbProduct" SelectionChanged="ProductListBox_SelectionChanged" Margin="0,44,0,0" Grid.RowSpan="2">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <!-- Mỗi item là một StackPanel chứa hình ảnh, tên và giá -->
+                                    <StackPanel Orientation="Vertical" Width="150" Margin="10">
+                                        <!-- Hình ảnh sản phẩm -->
+                                        <Image Source="{Binding ImageUrl}" Width="120" Height="120" />
+                                        <!-- Tên sản phẩm -->
+                                        <TextBlock Text="{Binding ProductName}" HorizontalAlignment="Center" FontWeight="Bold" />
+                                        <!-- Giá sản phẩm -->
+                                        <TextBlock Text="{Binding Price, StringFormat='{}{0:C}'}" HorizontalAlignment="Center" />
+                                        <!-- Nút Add to Cart -->
+                                        <Button Content="Add to Cart" 
+                                            Background="#FF5C8D89" 
+                                            Foreground="White" 
+                                            Padding="10,5" 
+                                            Margin="0,5,0,0"
+                                            Click="btnAddToCart_Click"
+                                            Tag="{Binding Id}">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" 
+                                                        CornerRadius="5" 
+                                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                                        BorderBrush="{TemplateBinding BorderBrush}">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <!-- Sắp xếp các item theo dạng lưới -->
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                        </ListBox>
                     </Grid>
                 </Grid>
             </ContentControl>

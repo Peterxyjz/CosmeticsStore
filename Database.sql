@@ -94,13 +94,14 @@ GO
 -- Insert sample products
 INSERT INTO Products (ProductName, CategoryId, Description, Price, StockQuantity, ImageUrl)
 VALUES
-('Hydrating Facial Cleanser', 1, 'Gentle cleanser for all skin types', 24.99, 100, 'cleanser.jpg'),
-('Vitamin C Serum', 1, 'Brightening serum with 20% vitamin C', 49.99, 75, 'serum.jpg'),
-('Matte Foundation', 2, 'Long-lasting foundation with SPF 15', 34.99, 50, 'foundation.jpg'),
-('Volumizing Mascara', 2, 'Adds volume and length to lashes', 19.99, 60, 'mascara.jpg'),
-('Moisturizing Shampoo', 3, 'Hydrates and nourishes hair', 15.99, 80, 'shampoo.jpg'),
-('Floral Eau de Parfum', 4, 'Light floral fragrance with jasmine notes', 59.99, 40, 'perfume.jpg'),
-('Nourishing Body Lotion', 5, 'Rich moisturizer for dry skin', 22.99, 90, 'lotion.jpg');
+('Hydrating Facial Cleanser', 1, 'Gentle cleanser for all skin types', 24.99, 100, 'pack://application:,,,/CosmeticsStore.WPF;component/Images/cleanser.jpg'),
+('Vitamin C Serum', 1, 'Brightening serum with 20% vitamin C', 49.99, 75, 'pack://application:,,,/CosmeticsStore.WPF;component/Images/serum.jpg'),
+('Matte Foundation', 2, 'Long-lasting foundation with SPF 15', 34.99, 50, 'pack://application:,,,/CosmeticsStore.WPF;component/Images/foundation.jpg'),
+('Volumizing Mascara', 2, 'Adds volume and length to lashes', 19.99, 60, 'pack://application:,,,/CosmeticsStore.WPF;component/Images/mascara.jpg'),
+('Moisturizing Shampoo', 3, 'Hydrates and nourishes hair', 15.99, 80, 'pack://application:,,,/CosmeticsStore.WPF;component/Images/shampoo.jpg'),
+('Floral Eau de Parfum', 4, 'Light floral fragrance with jasmine notes', 59.99, 40, 'pack://application:,,,/CosmeticsStore.WPF;component/Images/perfume.jpg'),
+('Nourishing Body Lotion', 5, 'Rich moisturizer for dry skin', 22.99, 90, 'pack://application:,,,/CosmeticsStore.WPF;component/Images/lotion.jpg'),
+('Test Default Image', 5, 'Wrong image package uri', 22.99, 90, 'con.jpg')
 GO
 
 -- Create a manager account
