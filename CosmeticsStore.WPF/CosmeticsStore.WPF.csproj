@@ -9,8 +9,46 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\cleanser.jpg" />
+    <None Remove="Images\default.jpg" />
+    <None Remove="Images\foundation.jpg" />
+    <None Remove="Images\lotion.jpg" />
+    <None Remove="Images\mascara.jpg" />
+    <None Remove="Images\perfume.jpg" />
+    <None Remove="Images\serum.jpg" />
+    <None Remove="Images\shampoo.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CosmeticsStore.Repositories\CosmeticsStore.Repositories.csproj" />
     <ProjectReference Include="..\CosmeticsStore.Services\CosmeticsStore.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\cleanser.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\default.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\foundation.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\lotion.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\mascara.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\perfume.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\serum.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\shampoo.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
