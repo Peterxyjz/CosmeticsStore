@@ -112,5 +112,7 @@ GO
 
 -- Create a customer account
 INSERT INTO Users (Username, Password, Email, Role)
-VALUES ('customer', '123', 'customer@gmail.com', 'Customer');
+VALUES ('customer', '123', 'customer@gmail.com', 'Customer'),
+('customer2', '123', 'customer2@gmail.com', 'Customer'),
+('customer3', '123', 'customer3@gmail.com', 'Customer')
 GO
