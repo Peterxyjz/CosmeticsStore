@@ -3,6 +3,7 @@ using CosmeticsStore.Repositories.Implementations;
 using CosmeticsStore.Repositories.Models;
 using CosmeticsStore.Service.Interfaces;
 using CosmeticsStore.Services.Implementations;
+using CosmeticsStore.Services.Interfaces;
 using System;
 using System.IO;
 using System.Reflection;
@@ -16,6 +17,8 @@ namespace CosmeticsStore.WPF
     {
         private User? _currentUser;
         private readonly IProductService _productService;
+        private readonly ICartService _cartService;
+
 
         public MainWindow()
         {
@@ -31,8 +34,14 @@ namespace CosmeticsStore.WPF
                 }
             }
             var context = new CosmeticsDbContext();
+
             var productRepository = new ProductRepository(context);
+            var cartRepository = new CartRepository(context);
+            var cartItemRepository = new CartItemRepository(context);
+
+            _cartService = new CartService(cartRepository, cartItemRepository, productRepository);
             _productService = new ProductService(productRepository);
+
             LoadProducts();
         }
 
@@ -71,10 +80,39 @@ namespace CosmeticsStore.WPF
             MessageBox.Show("Product browsing not implemented yet");
         }
 
+
         private void btnCart_Click(object sender, RoutedEventArgs e)
         {
-            // Implementation for viewing cart
-            MessageBox.Show("Cart view not implemented yet");
+            try
+            {
+                // Lấy Cart hiện tại của current User
+                Cart userCart = _cartService.GetActiveCartByUserId(_currentUser.UserId);
+
+                // Lấy CartItems trong Cart
+                IEnumerable<CartItem> cartItems = _cartService.GetCartItems(userCart.CartId);
+
+                // Khi Click Cart thì kiểm tra coi Cart có trống không(Aka Có Cart Items nào Ở trong Cart ko)
+                // Nếu trống thì return luôn
+                if (!cartItems.Any())
+                {
+                    MessageBox.Show("Your cart is empty", "Empty Cart", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                // Mở CartWindow để hiển thị Cart
+                // Truyền Parameter thông qua Constructor
+                // Truyền CartId để lát qua bên Cart Window không cần phải viết lại đoạn code lấy Cart của Current User
+                CartWindow cartWindow = new CartWindow(userCart.CartId);
+                cartWindow.Owner = this;
+                cartWindow.ShowDialog();
+
+                // Cập nhật lại List Product sau khi CartWindow đóng???
+                LoadProducts();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading cart: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void btnOrders_Click(object sender, RoutedEventArgs e)
@@ -126,12 +164,14 @@ namespace CosmeticsStore.WPF
             }
         }
 
+        // hàm add to cart
         private void btnAddToCart_Click(object sender, RoutedEventArgs e)
         {
-            // Lấy button đã được click
+
+            // Lấy button đã được click(button add to cart)
             Button button = (Button)sender;
 
-            // Lấy Id của sản phẩm từ Tag của button
+            // Lấy Id của sản phẩm từ Tag của button(khá giống hidden control)
             int productId = (int)button.Tag;
 
             // Lấy sản phẩm từ danh sách sản phẩm
@@ -139,11 +179,35 @@ namespace CosmeticsStore.WPF
 
             if (selectedProduct != null)
             {
-                // Thêm sản phẩm vào giỏ hàng
-                // Bạn cần có một service hoặc repository để xử lý giỏ hàng
-                // Ví dụ: _cartService.AddToCart(_currentUser.Id, productId, 1);
+                try
+                {
+                    // Kiểm tra xem sản phẩm còn hàng không
+                    if (selectedProduct.StockQuantity <= 0)
+                    {
+                        MessageBox.Show($"{selectedProduct.ProductName} is out of stock!", "Out of Stock", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
 
-                MessageBox.Show($"Added {selectedProduct.ProductName} to your cart!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    // Thêm sản phẩm vào giỏ hàng
+                    _cartService.AddToCart(_currentUser.UserId, productId, 1);
+
+                    MessageBox.Show($"Added {selectedProduct.ProductName} to your cart!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    // Hỏi người dùng có muốn xem giỏ hàng không
+                    // Nếu có thì Open Cart Window(Gọi hàm Click Cart)
+                    if (MessageBox.Show("View your cart now?", "Cart", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    {
+                        btnCart_Click(this, new RoutedEventArgs());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error adding product to cart: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Product not found!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
