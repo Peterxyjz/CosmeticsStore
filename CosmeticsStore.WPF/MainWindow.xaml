@@ -147,7 +147,7 @@
                                             Padding="10,5" 
                                             Margin="0,5,0,0"
                                             Click="btnAddToCart_Click"
-                                            Tag="{Binding Id}">
+                                            Tag="{Binding ProductId}">
                                             <Button.Template>
                                                 <ControlTemplate TargetType="Button">
                                                     <Border Background="{TemplateBinding Background}" 

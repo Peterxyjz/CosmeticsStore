@@ -101,7 +101,8 @@ VALUES
 ('Moisturizing Shampoo', 3, 'Hydrates and nourishes hair', 15.99, 80, 'pack://application:,,,/CosmeticsStore.WPF;component/Images/shampoo.jpg'),
 ('Floral Eau de Parfum', 4, 'Light floral fragrance with jasmine notes', 59.99, 40, 'pack://application:,,,/CosmeticsStore.WPF;component/Images/perfume.jpg'),
 ('Nourishing Body Lotion', 5, 'Rich moisturizer for dry skin', 22.99, 90, 'pack://application:,,,/CosmeticsStore.WPF;component/Images/lotion.jpg'),
-('Test Default Image', 5, 'Wrong image package uri', 22.99, 90, 'con.jpg')
+('Test Default Image', 5, 'Wrong image package uri', 22.99, 90, 'con.jpg'),
+('Test Zero Stock', 5, 'Cannot add to Cart', 25.00, 0, 'con.jpg')
 GO
 
 -- Create a manager account
@@ -111,5 +112,7 @@ GO
 
 -- Create a customer account
 INSERT INTO Users (Username, Password, Email, Role)
-VALUES ('customer', '123', 'customer@gmail.com', 'Customer');
+VALUES ('customer', '123', 'customer@gmail.com', 'Customer'),
+('customer2', '123', 'customer2@gmail.com', 'Customer'),
+('customer3', '123', 'customer3@gmail.com', 'Customer')
 GO
