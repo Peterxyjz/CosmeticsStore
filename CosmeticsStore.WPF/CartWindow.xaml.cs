@@ -1,5 +1,6 @@
 ﻿using CosmeticsStore.Repositories;
 using CosmeticsStore.Repositories.Implementations;
+using CosmeticsStore.Repositories.Models;
 using CosmeticsStore.Service.Interfaces;
 using CosmeticsStore.Services.Implementations;
 using CosmeticsStore.Services.Interfaces;
@@ -24,9 +25,11 @@ namespace CosmeticsStore.WPF
     /// </summary>
     public partial class CartWindow : Window
     {
+        private User? _currentUser;
         private readonly int _cartId;
         private readonly ICartService _cartService;
         private List<CartItemViewModel> _cartItems;
+        private readonly IOrderService _orderService;
 
         public CartWindow(int cartId)
         {
@@ -34,14 +37,21 @@ namespace CosmeticsStore.WPF
 
             _cartId = cartId;
 
+            // Get the current user from application state
+            if (App.Current.Properties.Contains("CurrentUser"))
+            {
+                _currentUser = (User?)App.Current.Properties["CurrentUser"];
+            }
             var context = new CosmeticsDbContext();
 
             CartRepository cartRepository = new CartRepository(context);
             ProductRepository productRepository = new ProductRepository(context);
             CartItemRepository cartItemRepository = new CartItemRepository(context);
+            OrderDetailRepository orderDetailRepository = new OrderDetailRepository(context);
+            OrderRepository orderRepository = new OrderRepository(context);
 
             _cartService = new CartService(cartRepository, cartItemRepository, productRepository);
-
+            _orderService = new OrderService(orderRepository, orderDetailRepository, cartRepository, cartItemRepository, productRepository);
             LoadCartItems();
             UpdateTotalPrice();
         }
@@ -174,13 +184,51 @@ namespace CosmeticsStore.WPF
         }
 
 
-        // Chưa Implemented
+        // MỚI IMPLEMENTED
         private void btnCheckout_Click(object sender, RoutedEventArgs e)
         {
+            // Khi click nút Checkout, hiển thị dialog xác nhận Checkout
             if (MessageBox.Show("Proceed to checkout?", "Checkout", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                // Chưa implemented chức năng checkout
-                MessageBox.Show("Checkout functionality will be implemented soon.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                // Show màn hình CheckoutWindow
+                CheckoutWindow checkoutWindow = new CheckoutWindow();
+                bool? result = checkoutWindow.ShowDialog();
+
+                // Nếu User nhấn nút Confirm Order từ màn hình CheckoutWindow
+                if (result == true)
+                {
+                    try
+                    {
+                        // Lấy shipping address và payment method được User chọn từ màn hình CheckoutWindow
+                        string shippingAddress = checkoutWindow.ShippingAddress;
+                        string paymentMethod = checkoutWindow.PaymentMethod;
+
+                        // Bắt đầu tiến trình thanh toán
+                        // Gọi hàm CreateOrder từ OrderService
+                        // Hàm này tạo sẽ insert Order mới, OrderDetails và cập nhật lại StockQuantity của Product
+                        int orderId = _orderService.CreateOrder(
+                            _currentUser.UserId,
+                            shippingAddress,
+                            paymentMethod);
+
+                        // Show success message
+                        MessageBox.Show($"Order #{orderId} placed successfully! Thank you for your purchase.",
+                            "Order Confirmation", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                        // Close cart window
+                        this.Close();
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        MessageBox.Show($"Error processing order: {ex.Message}",
+                            "Order Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"An unexpected error occurred: {ex.Message}",
+                            "System Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }// Nếu User nhấn Cancel trong màn hình CheckoutWindow, không làm gì cả
             }
         }
 
