@@ -7,6 +7,7 @@ using CosmeticsStore.Services.Interfaces;
 using System;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -18,6 +19,7 @@ namespace CosmeticsStore.WPF
         private User? _currentUser;
         private readonly IProductService _productService;
         private readonly ICartService _cartService;
+        private readonly IOrderService _orderService;
 
 
         public MainWindow()
@@ -38,9 +40,12 @@ namespace CosmeticsStore.WPF
             var productRepository = new ProductRepository(context);
             var cartRepository = new CartRepository(context);
             var cartItemRepository = new CartItemRepository(context);
+            var orderRepository = new OrderRepository(context);
+            var orderDetailRepository = new OrderDetailRepository(context);
 
             _cartService = new CartService(cartRepository, cartItemRepository, productRepository);
             _productService = new ProductService(productRepository);
+            _orderService = new OrderService(orderRepository, orderDetailRepository, cartRepository, cartItemRepository, productRepository);
 
             LoadProducts();
         }
@@ -85,7 +90,7 @@ namespace CosmeticsStore.WPF
         {
             try
             {
-                // Lấy Cart hiện tại của current User
+                // Lấy Cart hiện tại của current User, Nếu User chưa có Cart thì tạo mới
                 Cart userCart = _cartService.GetActiveCartByUserId(_currentUser.UserId);
 
                 // Lấy CartItems trong Cart
@@ -115,11 +120,39 @@ namespace CosmeticsStore.WPF
             }
         }
 
+
+        // IMPLEMENT FUNCTION NÀY
         private void btnOrders_Click(object sender, RoutedEventArgs e)
         {
-            // Implementation for viewing orders
-            MessageBox.Show("Orders view not implemented yet");
+            try
+            {
+
+
+
+                // Lấy các Order mà User hiện tại đã Commit
+                var userOrders = _orderService.GetOrdersByUserId(_currentUser.UserId);
+
+                // Nếu User chưa có Order thì sẽ không mở được OrderWindow
+                if (userOrders == null || !userOrders.Any())
+                {
+                    MessageBox.Show("You don't have any orders yet", "No Orders",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                // Open Orders Window
+                OrdersWindow ordersWindow = new OrdersWindow();
+                ordersWindow.Owner = this;
+                ordersWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading orders: {ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
+
+
 
         private void btnLogout_Click(object sender, RoutedEventArgs e)
         {
