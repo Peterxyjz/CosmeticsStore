@@ -11,6 +11,9 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using System.Collections.Generic;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 
 namespace CosmeticsStore.WPF
 {
@@ -20,6 +23,9 @@ namespace CosmeticsStore.WPF
         private readonly IProductService _productService;
         private readonly ICartService _cartService;
         private readonly IOrderService _orderService;
+        private readonly ICategoryService _categoryService;
+        //private Popup categoryPopup;
+        //private ListBox categoryListBox;
 
 
         public MainWindow()
@@ -42,17 +48,283 @@ namespace CosmeticsStore.WPF
             var cartItemRepository = new CartItemRepository(context);
             var orderRepository = new OrderRepository(context);
             var orderDetailRepository = new OrderDetailRepository(context);
+            var categoryRepository = new CategoryRepository(context);
 
             _cartService = new CartService(cartRepository, cartItemRepository, productRepository);
             _productService = new ProductService(productRepository);
             _orderService = new OrderService(orderRepository, orderDetailRepository, cartRepository, cartItemRepository, productRepository);
+            _categoryService = new CategoryService(categoryRepository);
+
+            // Khởi tạo popup danh mục
+            //InitializeCategoryPopup();
+            // B1: khởi tạo popup bằng hàm InitializeCategoryPopup()
+            // B2: khi click vào button Category thì kích hoạt btnCategories_Click()
+            // B3: Trong hàm btnCategories_Click() sẽ gọi hàm LoadCategories() để load category
+            // B4: Trong hàm LoadCategories() sẽ lấy danh sách danh mục từ CategoryService và thêm vào ListBox
+            // B5: Khi chọn 1 danh mục thì sẽ gọi hàm CategoryListBox_SelectionChanged() để filter product theo category đã chọn
+            // code trong method InitializaCategoryPopup() về cơ bản có thể nằm bên phần giao diện
 
             LoadProducts();
         }
 
-        public void LoadProducts()
+
+        //// hàm khởi tạo popup cho category, chơi kiểu nhúng giao diện vào code
+        //private void InitializeCategoryPopup()
+        //{
+        //    // Tạo Popup control
+        //    categoryPopup = new Popup();
+        //    categoryPopup.AllowsTransparency = true;
+        //    categoryPopup.PopupAnimation = PopupAnimation.Fade;
+        //    categoryPopup.StaysOpen = false;
+
+        //    // Tạo Border cho popup để có thể style
+        //    Border border = new Border();
+        //    border.BorderBrush = new SolidColorBrush(Colors.LightGray);
+        //    border.BorderThickness = new Thickness(1);
+        //    border.Background = new SolidColorBrush(Colors.White);
+        //    border.CornerRadius = new CornerRadius(4);
+        //    border.Padding = new Thickness(2);
+        //    border.Effect = new System.Windows.Media.Effects.DropShadowEffect
+        //    {
+        //        Color = Colors.Gray,
+        //        Direction = 315,
+        //        ShadowDepth = 3,
+        //        BlurRadius = 5,
+        //        Opacity = 0.3
+        //    };
+
+        //    // Stack panel để chứa tiêu đề và ListBox
+        //    StackPanel panel = new StackPanel();
+        //    panel.Width = 200;
+        //    panel.Background = new SolidColorBrush(Colors.White);
+
+        //    // Thêm Title 
+
+        //    // Tạo Border
+        //    Border titleBorder = new Border();
+        //    titleBorder.BorderBrush = new SolidColorBrush(Colors.LightGray);
+        //    titleBorder.BorderThickness = new Thickness(0, 0, 0, 1);
+        //    titleBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFF5F5F5"));
+
+        //    // Tạo TextBlock
+        //    TextBlock titleBlock = new TextBlock();
+        //    titleBlock.Text = "Select Category";
+        //    titleBlock.FontWeight = FontWeights.SemiBold;
+        //    titleBlock.Padding = new Thickness(8, 8, 8, 4);
+
+        //    // Thêm TextBlock vào Border
+        //    titleBorder.Child = titleBlock;
+
+        //    // Thêm Border vào panel
+        //    panel.Children.Add(titleBorder);
+
+        //    // Tạo ListBox cho Category
+        //    categoryListBox = new ListBox();
+        //    categoryListBox.MaxHeight = 300;
+        //    categoryListBox.BorderThickness = new Thickness(0);
+        //    // Ủy quyền event aka giống khai báo event trong giao diện xaml
+        //    categoryListBox.SelectionChanged += CategoryListBox_SelectionChanged;
+        //    panel.Children.Add(categoryListBox);
+
+        //    // Thêm "All Categories" vào danh sách dropdown(thành 1 item của category List Box)
+        //    ListBoxItem allCategoriesItem = new ListBoxItem();
+        //    allCategoriesItem.Content = "All Categories";
+        //    allCategoriesItem.Padding = new Thickness(8, 5, 8, 5);
+        //    allCategoriesItem.Tag = 0; // Tag = 0 để đánh dấu là "All Categories"
+        //    categoryListBox.Items.Add(allCategoriesItem);
+
+        //    // Thêm separator
+        //    Separator separator = new Separator();
+        //    separator.Margin = new Thickness(5, 2, 5, 2);
+        //    panel.Children.Add(separator);
+
+        //    // Thêm nút Close
+        //    Button closeButton = new Button();
+        //    closeButton.Content = "Close";
+        //    closeButton.Margin = new Thickness(5);
+        //    closeButton.HorizontalAlignment = HorizontalAlignment.Right;
+        //    closeButton.Click += (s, e) => categoryPopup.IsOpen = false;
+        //    panel.Children.Add(closeButton);
+
+        //    border.Child = panel;
+        //    categoryPopup.Child = border;
+        //}
+
+        // khi Click vào button thì sổ ra ListBox chứa các Category
+        //private void btnCategories_Click(object sender, RoutedEventArgs e)
+        //{
+        //    // Load Category lên MainWindow(dropdown xuống)
+        //    LoadCategories();
+
+        //    // Xác định vị trí để hiển thị popup(Cái List Box) dropdown
+        //    var btnCategories = sender as Button;
+        //    categoryPopup.PlacementTarget = btnCategories;
+        //    categoryPopup.Placement = PlacementMode.Bottom;
+
+        //    // Hiển thị popup ListBox chứa Category dropdown(từ chỗ này cái List Box mới hiện trên màn hình)
+        //    // giống MainWindow.Show()
+        //    // trước đó chỉ giống như là MainWindow main = new MainWindow() hoi
+        //    categoryPopup.IsOpen = true;
+        //}
+
+        //private void LoadCategories()
+        //{
+        //    try
+        //    {
+        //        // Xóa tất cả các Category hiện tại (trừ "All Categories")
+        //        while (categoryListBox.Items.Count > 1)
+        //        {
+        //            categoryListBox.Items.RemoveAt(1);
+        //        }
+
+        //        // Lấy toàn bộ Category dưới db
+        //        var categories = _categoryService.GetAllCategories();
+
+        //        // Thêm các Category vào ListBox
+        //        foreach (var category in categories)
+        //        {
+        //            ListBoxItem item = new ListBoxItem();
+        //            item.Content = category.CategoryName;
+        //            item.Padding = new Thickness(8, 5, 8, 5);
+        //            item.Tag = category.CategoryId; // Lưu CategoryId trong Tag
+        //            categoryListBox.Items.Add(item);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Error loading categories: {ex.Message}", "Error",
+        //            MessageBoxButton.OK, MessageBoxImage.Error);
+        //    }
+        //}
+
+
+        //// hàm xử lí khi chọn Category để filter Product khi load lên
+        //private void CategoryListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    if (categoryListBox.SelectedItem is ListBoxItem selectedItem)
+        //    {
+        //        // Lấy CategoryId từ Tag của item được chọn
+        //        int categoryId = (int)selectedItem.Tag;
+
+        //        // Filter Product theo Category đã chọn
+        //        LoadProducts(categoryId);
+
+        //        // Đóng popup
+        //        categoryPopup.IsOpen = false;
+        //    }
+        //}
+
+
+        // ĐỐNG TRÊN LÀ NHÉT GIAO DIỆN VÀO CODE, NÊN TÁCH GIAO DIỆN VÀ PHẦN XỬ LÍ RA
+
+
+
+        // khi Click vào button thì sổ ra ListBox chứa các Category
+        private void btnCategories_Click(object sender, RoutedEventArgs e)
         {
-            var products = _productService.GetAllProducts();
+            // Load Category dưới db lên Popup Listbox để chuẩn bị cho việc Show
+            LoadCategories();
+
+            // Show cái Popup Listbox toàn bộ Category
+            categoryPopup.IsOpen = true;
+        }
+
+        private void LoadCategories()
+        {
+            try
+            {
+                // Clear all categories except the "All Categories" item at index 0
+                while (categoryListBox.Items.Count > 1)
+                {
+                    categoryListBox.Items.RemoveAt(1);
+                }
+
+                // Lấy Category dưới db
+                var categories = _categoryService.GetAllCategories();
+
+                // nhồi Category vào ListBox
+                foreach (var category in categories)
+                {
+                    ListBoxItem item = new ListBoxItem();
+                    item.Content = category.CategoryName;
+                    item.Padding = new Thickness(8, 5, 8, 5);
+                    item.Tag = category.CategoryId; // Store CategoryId in Tag
+                    categoryListBox.Items.Add(item);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading categories: {ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void CategoryListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (categoryListBox.SelectedItem is ListBoxItem selectedItem)
+            {
+                // Make sure the Tag property exists and can be converted to an integer
+                if (selectedItem.Tag != null)
+                {
+                    int categoryId;
+                    if (int.TryParse(selectedItem.Tag.ToString(), out categoryId))
+                    {
+                        // Get the category name from the selected item
+                        string categoryName = selectedItem.Content.ToString();
+
+                        // Update the featured products text based on selected category
+                        if (categoryId > 0) // If not "All Categories"
+                        {
+                            txtFeaturedProducts.Text = $"{categoryName} Products";
+                        }
+                        else
+                        {
+                            txtFeaturedProducts.Text = "Featured Products";
+                        }
+
+                        // Filter products by the selected category
+                        LoadProducts(categoryId);
+                    }
+                    else
+                    {
+                        // If tag is not a valid integer, load all products
+                        txtFeaturedProducts.Text = "Featured Products";
+                        LoadProducts(null);
+                    }
+                }
+                else
+                {
+                    // If tag is null, load all products
+                    txtFeaturedProducts.Text = "Featured Products";
+                    LoadProducts(null);
+                }
+
+                // Close the popup
+                categoryPopup.IsOpen = false;
+            }
+        }
+
+        private void ClosePopupButton_Click(object sender, RoutedEventArgs e)
+        {
+            categoryPopup.IsOpen = false;
+        }
+
+
+
+        public void LoadProducts(int? categoryId = null)
+        {
+            //var products = _productService.GetAllProducts();
+
+            // Lấy ProductId dựa trên filter Category
+            IEnumerable<Product> products;
+            if (categoryId.HasValue && categoryId.Value > 0) // Kiểm tra categoryId > 0 để loại trừ trường hợp "All Categories"
+            {
+                products = _productService.GetProductsByCategory(categoryId.Value);
+            }
+            else
+            {
+                products = _productService.GetAllProducts();
+            }
 
             foreach (Product product in products)
             {
@@ -112,7 +384,7 @@ namespace CosmeticsStore.WPF
                 cartWindow.ShowDialog();
 
                 // Cập nhật lại List Product sau khi CartWindow đóng???
-                LoadProducts();
+                //LoadProducts();
             }
             catch (Exception ex)
             {

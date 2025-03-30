@@ -55,10 +55,133 @@
 
                 <!-- Navigation Items -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left">
+                    
                     <Button Content="Products" Style="{StaticResource NavButton}" Click="btnProducts_Click"/>
-                    <Button Content="Categories" Style="{StaticResource NavButton}"/>
+                    <Button Content="Categories" Style="{StaticResource NavButton}" Click="btnCategories_Click"/>
                     <Button Content="My Cart" Style="{StaticResource NavButton}" Click="btnCart_Click"/>
                     <Button Content="My Orders" Style="{StaticResource NavButton}" Click="btnOrders_Click"/>
+
+                    <!-- Category Popup -->
+                    <Popup x:Name="categoryPopup"
+                           PlacementTarget="{Binding ElementName=btnCategories}"
+                           Placement="Bottom"
+                           AllowsTransparency="True"
+                           PopupAnimation="Fade"
+                           StaysOpen="False">
+                        <Border BorderBrush="LightGray"
+                                BorderThickness="1"
+                                Background="White"
+                                CornerRadius="8"
+                                Padding="2">
+                            <!-- Increased corner radius for a more modern look -->
+                            <Border.Effect>
+                                <DropShadowEffect Color="Gray"
+                                                  Direction="315"
+                                                  ShadowDepth="4"
+                                                  BlurRadius="8"
+                                                  Opacity="0.4" />
+                                <!-- Enhanced shadow effect -->
+                            </Border.Effect>
+                            <StackPanel Width="220"
+                                        Background="White">
+                                <!-- Slightly wider for better spacing -->
+                                <!-- Title -->
+                                <Border BorderBrush="LightGray"
+                                        BorderThickness="0,0,0,1"
+                                        Background="#FF5C8D89">
+                                    <!-- Matching the app's color scheme -->
+                                    <TextBlock Text="Select Category"
+                                               FontWeight="SemiBold"
+                                               Foreground="White"
+                                               Padding="10,10,10,8"
+                                               FontSize="14" />
+                                    <!-- Better padding and text color -->
+                                </Border>
+
+                                <!-- Category ListBox -->
+                                <!-- Category ListBox -->
+                                <ListBox x:Name="categoryListBox"
+                                         MaxHeight="300"
+                                         BorderThickness="0"
+                                         SelectionChanged="CategoryListBox_SelectionChanged"
+                                         Margin="0,4,0,0">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="Padding"
+                                                    Value="10,8,10,8" />
+                                            <Setter Property="Cursor"
+                                                    Value="Hand" />
+                                            <Setter Property="FontWeight"
+                                                    Value="SemiBold" />
+                                            <!-- Making text bolder -->
+                                            <Setter Property="FontSize"
+                                                    Value="14" />
+                                            <!-- Increasing font size -->
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver"
+                                                         Value="True">
+                                                    <Setter Property="Background"
+                                                            Value="#FFF5F5F5" />
+                                                    <Setter Property="Foreground"
+                                                            Value="#FF5C8D89" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                    <ListBoxItem Content="All Categories"
+                                                 Tag="0" />
+                                </ListBox>
+
+                                <!-- Separator -->
+                                <Separator Margin="8,2,8,2" />
+
+                                <!-- Close Button -->
+                                <!-- Close Button -->
+                                <Button Content="Close"
+                                        Margin="8,6,8,8"
+                                        HorizontalAlignment="Right"
+                                        Click="ClosePopupButton_Click"
+                                        Padding="15,7"
+                                        Width="80"
+                                        Background="#FF5C8D89"
+                                        Foreground="White"
+                                        FontWeight="SemiBold">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}"
+                                                    CornerRadius="6"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}">
+                                                <ContentPresenter HorizontalAlignment="Center"
+                                                                  VerticalAlignment="Center" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver"
+                                                         Value="True">
+                                                    <Setter Property="Background"
+                                                            Value="#FF4A7C78" />
+                                                    <Setter Property="Effect">
+                                                        <Setter.Value>
+                                                            <DropShadowEffect Color="Gray"
+                                                                              Direction="315"
+                                                                              ShadowDepth="1"
+                                                                              BlurRadius="3"
+                                                                              Opacity="0.3" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </Popup>
+                    
                 </StackPanel>
 
                 <!-- User Controls -->
@@ -122,7 +245,7 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Text="Featured Products" FontSize="22" 
+                        <TextBlock x:Name="txtFeaturedProducts" Grid.Row="0" Text="Featured Products" FontSize="22" 
                                    FontWeight="SemiBold" Margin="0,0,0,15"/>
 
                         <TextBlock Grid.Row="1" Text="Products will be displayed here" 
