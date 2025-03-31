@@ -56,7 +56,7 @@
                 <!-- Navigation Items -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left">
                     
-                    <Button Content="Products" Style="{StaticResource NavButton}" Click="btnProducts_Click"/>
+                    <!--<Button Content="Products" Style="{StaticResource NavButton}" Click="btnProducts_Click"/>-->
                     <Button Content="Categories" Style="{StaticResource NavButton}" Click="btnCategories_Click"/>
                     <Button Content="My Cart" Style="{StaticResource NavButton}" Click="btnCart_Click"/>
                     <Button Content="My Orders" Style="{StaticResource NavButton}" Click="btnOrders_Click"/>
