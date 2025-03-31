@@ -140,9 +140,9 @@ namespace CosmeticsStore.Services.Implementations
                 OrderDate = DateTime.Now,
                 TotalAmount = totalAmount,
                 ShippingAddress = shippingAddress,
-                Status = "Pending",
+                Status = "Processing",
                 PaymentMethod = paymentMethod,
-                PaymentStatus = "Unpaid"
+                PaymentStatus = "Paid"
             };
             _orderRepository.Add(order);
             // Create order details and update product stock
