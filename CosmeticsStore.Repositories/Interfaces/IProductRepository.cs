@@ -9,7 +9,9 @@ namespace CosmeticsStore.Repositories.Interfaces
 {
     public interface IProductRepository : IRepository<Product>
     {
+        IEnumerable<Product> GetAll();
         IEnumerable<Product> GetProductsByCategory(int categoryId);
         Product? GetProductWithCategory(int id);
+        int GetTotalProducts();
     }
 }

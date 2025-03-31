@@ -1,4 +1,5 @@
-﻿using CosmeticsStore.Repositories.Interfaces;
+﻿using CosmeticsStore.Repositories.Implementations;
+using CosmeticsStore.Repositories.Interfaces;
 using CosmeticsStore.Repositories.Models;
 using CosmeticsStore.Service.Interfaces;
 using System;
@@ -16,6 +17,10 @@ namespace CosmeticsStore.Services.Implementations
         public UserService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
+        }
+        public int GetTotalUsers()
+        {
+            return _userRepository.GetAll().Count(p => p.Status.HasValue && p.Status.Value);
         }
 
         public User? GetUserById(int id)
@@ -46,8 +51,21 @@ namespace CosmeticsStore.Services.Implementations
 
         public void UpdateUser(User user)
         {
-            _userRepository.Update(user);
+            var existingUser = _userRepository.GetById(user.UserId);
+            if (existingUser != null)
+            {
+                // Cập nhật thông tin người dùng
+                existingUser.Username = user.Username;
+                existingUser.Email = user.Email;
+                existingUser.Password = user.Password; // Cân nhắc mã hóa mật khẩu trước khi lưu
+                existingUser.Role = user.Role;
+                existingUser.Status = user.Status;
+                
+
+                _userRepository.Update(existingUser);
+            }
         }
+
 
         public void DeleteUser(int id)
         {

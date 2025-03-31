@@ -9,7 +9,10 @@ namespace CosmeticsStore.Repositories.Implementations
         public CategoryRepository(CosmeticsDbContext context) : base(context)
         {
         }
-
-        // Implement any ICategoryRepository-specific methods here
+        public virtual IEnumerable<Category> GetAll()
+        {
+            return _context.Categories.ToList();
+        }
+   
     }
 }

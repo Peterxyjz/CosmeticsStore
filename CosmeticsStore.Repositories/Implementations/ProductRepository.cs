@@ -29,6 +29,10 @@ namespace CosmeticsStore.Repositories.Implementations
                 .Where(p => p.CategoryId == categoryId && p.Status == true)
                 .ToList();
         }
+        public int GetTotalProducts()
+        {
+            return _context.Products.Count();
+        }
 
         public Product? GetProductWithCategory(int id)
         {
