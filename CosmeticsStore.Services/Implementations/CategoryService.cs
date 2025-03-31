@@ -28,6 +28,7 @@ namespace CosmeticsStore.Services.Implementations
             return _categoryRepository.GetAll();
         }
 
+
         public void AddCategory(Category category)
         {
             _categoryRepository.Add(category);

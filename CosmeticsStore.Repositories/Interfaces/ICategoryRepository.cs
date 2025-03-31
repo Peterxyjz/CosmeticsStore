@@ -9,6 +9,6 @@ namespace CosmeticsStore.Repositories.Interfaces
 {
     public interface ICategoryRepository : IRepository<Category>
     {
-        // Add any category-specific methods here if needed
+        IEnumerable<Category> GetAll();
     }
 }

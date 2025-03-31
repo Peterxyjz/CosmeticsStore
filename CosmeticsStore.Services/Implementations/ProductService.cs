@@ -18,6 +18,10 @@ namespace CosmeticsStore.Services.Implementations
             _productRepository = productRepository;
         }
 
+        public int GetTotalProducts()
+        {
+            return _productRepository.GetAll().Count(); // Assuming GetAll() returns all products
+        }
         public Product? GetProductById(int id)
         {
             return _productRepository.GetProductWithCategory(id);
@@ -46,9 +50,22 @@ namespace CosmeticsStore.Services.Implementations
 
         public void UpdateProduct(Product product)
         {
-            _productRepository.Update(product);
-        }
+            var existingProduct = _productRepository.GetById(product.ProductId);
+            if (existingProduct != null)
+            {
+                // Cập nhật thông tin sản phẩm
+                existingProduct.ProductName = product.ProductName;
+                existingProduct.Description = product.Description;
+                existingProduct.Price = product.Price;
+                existingProduct.StockQuantity = product.StockQuantity;
+                existingProduct.CategoryId = product.CategoryId;
+                existingProduct.ImageUrl = product.ImageUrl;
+                existingProduct.CreatedDate = product.CreatedDate;
+                existingProduct.Status = product.Status;
 
+                _productRepository.Update(existingProduct);
+            }
+        }
         public void DeleteProduct(int id)
         {
             var product = _productRepository.GetById(id);

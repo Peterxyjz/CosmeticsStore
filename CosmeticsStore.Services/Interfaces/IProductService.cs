@@ -15,5 +15,6 @@ namespace CosmeticsStore.Service.Interfaces
         void AddProduct(Product product);
         void UpdateProduct(Product product);
         void DeleteProduct(int id);
+        int GetTotalProducts();
     }
 }
