@@ -27,8 +27,9 @@
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
             <Button Content="Accept Order" Width="120" Margin="5" Click="btnAccept_Click"/>
             <Button Content="Cancel Order" Width="120" Margin="5" Click="btnCancel_Click"/>
-            <Button Content="Update Status" Width="120" Margin="5" Click="btnUpdateStatus_Click"/>
-            <Button Content="View Details" Width="120" Margin="5" Click="btnViewDetails_Click"/>
+            <Button Content="Mark Delivered" Width="120" Margin="5" Click="btnUpdateStatus_Click"/>
+            <Button Content="Close" Width="120" Margin="5" Click="btnClose"/>
+
         </StackPanel>
     </Grid>
 </Window>

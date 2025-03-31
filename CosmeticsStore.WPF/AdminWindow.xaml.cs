@@ -59,8 +59,9 @@ namespace CosmeticsStore.WPF
 
         private void btnOrders_Click(object sender, RoutedEventArgs e)
         {
-            // Implementation for order management
-            MessageBox.Show("Order management not implemented yet");
+            OrderManagementWindow orderManagementWindow = new OrderManagementWindow();
+            orderManagementWindow.Show();
+            this.Close();
         }
 
         private void btnUsers_Click(object sender, RoutedEventArgs e)

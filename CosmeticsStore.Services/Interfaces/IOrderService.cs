@@ -15,5 +15,8 @@ namespace CosmeticsStore.Services.Interfaces
         int CreateOrder(int userId, string shippingAddress, string paymentMethod);
         void UpdateOrderStatus(int orderId, string status);
         void UpdatePaymentStatus(int orderId, string paymentStatus);
+        void AcceptOrder(int orderId); // Chuyển từ Processing sang Shipped
+        void CancelOrder(int orderId);
+        void UpdateOrderStatus(int orderId);
     }
 }
