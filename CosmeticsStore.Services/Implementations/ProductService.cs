@@ -20,8 +20,10 @@ namespace CosmeticsStore.Services.Implementations
 
         public int GetTotalProducts()
         {
-            return _productRepository.GetAll().Count(); // Assuming GetAll() returns all products
+            return _productRepository.GetAll().Count(p => p.Status.HasValue && p.Status.Value);
         }
+
+
         public Product? GetProductById(int id)
         {
             return _productRepository.GetProductWithCategory(id);

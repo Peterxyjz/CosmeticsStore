@@ -15,6 +15,7 @@ namespace CosmeticsStore.Service.Interfaces
         void AddUser(User user);
         void UpdateUser(User user);
         void DeleteUser(int id);
+        int GetTotalUsers();
         IEnumerable<User> GetUsersByRole(string role);
     }
 }

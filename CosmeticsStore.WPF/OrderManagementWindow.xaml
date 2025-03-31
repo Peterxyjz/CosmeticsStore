@@ -1,0 +1,34 @@
+﻿<Window x:Class="CosmeticsStore.WPF.OrderManagementWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Order Management" Height="500" Width="600"
+        WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Label Content="Order Management" FontSize="20" HorizontalAlignment="Center" Margin="10"/>
+
+        <DataGrid x:Name="dgOrders" Grid.Row="1" Margin="10" AutoGenerateColumns="False" SelectionChanged="dgOrders_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Order ID" Binding="{Binding OrderId}"/>
+                <DataGridTextColumn Header="User ID" Binding="{Binding UserId}"/>
+                <DataGridTextColumn Header="Order Date" Binding="{Binding OrderDate}"/>
+                <DataGridTextColumn Header="Total Amount" Binding="{Binding TotalAmount}"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding Status}"/>
+                <DataGridTextColumn Header="Payment Status" Binding="{Binding PaymentStatus}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+            <Button Content="Accept Order" Width="120" Margin="5" Click="btnAccept_Click"/>
+            <Button Content="Cancel Order" Width="120" Margin="5" Click="btnCancel_Click"/>
+            <Button Content="Update Status" Width="120" Margin="5" Click="btnUpdateStatus_Click"/>
+            <Button Content="View Details" Width="120" Margin="5" Click="btnViewDetails_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -201,7 +201,9 @@ namespace CosmeticsStore.WPF
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            AdminWindow adminWindow = new AdminWindow(); // Tạo cửa sổ AdminWindow
+            adminWindow.Show(); // Hiển thị AdminWindow
+            this.Close(); // Đóng cửa sổ hiện tại
         }
     }
 }
