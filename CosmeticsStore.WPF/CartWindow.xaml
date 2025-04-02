@@ -5,75 +5,222 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CosmeticsStore.WPF"
         mc:Ignorable="d"
-        Title="Shopping Cart" Height="500" Width="800" WindowStartupLocation="CenterOwner">
-    <Grid Margin="10">
+        Title="Shopping Cart" Height="550" Width="850" WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <!-- Quantity Button Style -->
+        <Style x:Key="QuantityButton" TargetType="Button">
+            <Setter Property="Background" Value="#FFF5F5F5"/>
+            <Setter Property="Foreground" Value="#FF333333"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#FFDDDDDD"/>
+            <Setter Property="Width" Value="28"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFEEEEEE"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Remove Button Style -->
+        <Style x:Key="RemoveButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#FF5C8D89"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="8,5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFF5F5F5"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <!-- Action Button Style -->
+        <Style x:Key="ActionButton" TargetType="Button">
+            <Setter Property="Background" Value="#FFEEEEEE"/>
+            <Setter Property="Foreground" Value="#FF333333"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFE0E0E0"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <!-- Checkout Button Style -->
+        <Style x:Key="CheckoutButton" TargetType="Button">
+            <Setter Property="Background" Value="#FF5C8D89"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF4A7C78"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- Danh sách sản phẩm trong giỏ hàng -->
-        <ListView x:Name="lvCartItems" Grid.Row="0" Margin="0,0,0,10">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Product" Width="250">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Source="{Binding ImageUrl}" Width="40" Height="40" Margin="0,0,10,0" />
-                                    <TextBlock Text="{Binding ProductName}" VerticalAlignment="Center" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Price" Width="100">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Price, StringFormat=\${0:F2}}" HorizontalAlignment="Right" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Quantity" Width="150">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <Button x:Name="btnDecreaseQuantity" Content="-" Width="25" Margin="0,0,5,0" 
-                                            Click="btnDecreaseQuantity_Click" />
-                                    <TextBlock Text="{Binding Quantity}" Width="30" TextAlignment="Center" VerticalAlignment="Center" />
-                                    <Button x:Name="btnIncreaseQuantity" Content="+" Width="25" Margin="5,0,0,0" 
-                                            Click="btnIncreaseQuantity_Click" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Subtotal" Width="100">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Subtotal, StringFormat=\${0:F2}}" HorizontalAlignment="Right" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Actions" Width="100">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button x:Name="btnRemove" Content="Remove" Width="70" Click="btnRemove_Click" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <!-- Header -->
+        <Border Grid.Row="0" Background="White" BorderBrush="#FFE0E0E0" BorderThickness="0,0,0,1" Padding="20,15">
+            <StackPanel>
+                <TextBlock Text="Shopping Cart" FontSize="22" FontWeight="SemiBold" Foreground="#FF333333"/>
+                <TextBlock x:Name="txtItemCount" Text="0 items in your cart" FontSize="14" Foreground="#FF6D6D6D" Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border>
 
+        <!-- Main Content -->
+        <Border Grid.Row="1" Background="#FFF8F9FA" Padding="20">
+            <ListView x:Name="lvCartItems" BorderThickness="0" Background="Transparent">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="Background" Value="White"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                        <Setter Property="BorderBrush" Value="#FFE0E0E0"/>
+                        <Setter Property="Padding" Value="15,10"/>
+                        <Setter Property="Margin" Value="0,0,0,10"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <Border Background="{TemplateBinding Background}"
+                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            CornerRadius="8">
+                                        <ContentPresenter/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <!-- Product Image -->
+                            <Border Grid.Column="0" Width="60" Height="60" CornerRadius="6" Margin="0,0,15,0">
+                                <Border.Background>
+                                    <ImageBrush ImageSource="{Binding ImageUrl}" Stretch="UniformToFill"/>
+                                </Border.Background>
+                            </Border>
+                            
+                            <!-- Product Details -->
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding ProductName}" FontWeight="SemiBold" FontSize="15" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Text="{Binding Price, StringFormat=\'\${0:F2}\'}" Foreground="#FF5C8D89" FontWeight="SemiBold" Margin="0,5,0,0"/>
+                            </StackPanel>
+                            
+                            <!-- Quantity Controls -->
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="15,0">
+                                <Button x:Name="btnDecreaseQuantity" Content="-" Style="{StaticResource QuantityButton}" Click="btnDecreaseQuantity_Click" />
+                                <Border Background="White" BorderBrush="#FFDDDDDD" BorderThickness="1" CornerRadius="4" Width="40" Height="28" Margin="5,0">
+                                    <TextBlock Text="{Binding Quantity}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                                </Border>
+                                <Button x:Name="btnIncreaseQuantity" Content="+" Style="{StaticResource QuantityButton}" Click="btnIncreaseQuantity_Click" />
+                            </StackPanel>
 
-        <TextBlock x:Name="txtTotal" Grid.Row="1" Text="Total: $0.00" FontSize="16" FontWeight="Bold" 
-                   HorizontalAlignment="Right" Margin="0,0,0,10" />
+                            <!-- Subtotal -->
+                            <TextBlock Grid.Column="3" Text="{Binding Subtotal, StringFormat=\'\${0:F2}\'}" FontWeight="SemiBold" VerticalAlignment="Center" MinWidth="80" TextAlignment="Right" Margin="10,0"/>
+                            
+                            <!-- Remove Button -->
+                            <Button Grid.Column="4" x:Name="btnRemove" Content="Remove" Style="{StaticResource RemoveButton}" Click="btnRemove_Click" VerticalAlignment="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Border>
 
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="btnContinueShopping" Content="Continue Shopping" Width="150" Height="30" Margin="0,0,10,0" 
-                    Click="btnContinueShopping_Click" />
-            <Button x:Name="btnCheckout" Content="Checkout" Width="150" Height="30" Background="#4CAF50" Foreground="White"
-                    Click="btnCheckout_Click" />
-        </StackPanel>
+        <!-- Footer -->
+        <Border Grid.Row="2" Background="White" BorderBrush="#FFE0E0E0" BorderThickness="0,1,0,0" Padding="20,15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Summary -->
+                <StackPanel Grid.Column="0">
+                    <TextBlock x:Name="txtTotal" Text="Total: $0.00" FontSize="18" FontWeight="Bold" Foreground="#FF333333"/>
+                    <TextBlock Text="Shipping and taxes calculated at checkout" FontSize="12" Foreground="#FF6D6D6D" Margin="0,5,0,0"/>
+                </StackPanel>
+                
+                <!-- Action Buttons -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="btnContinueShopping" Content="Continue Shopping" Style="{StaticResource ActionButton}" Width="150" Margin="0,0,10,0" Click="btnContinueShopping_Click" />
+                    <Button x:Name="btnCheckout" Content="Checkout" Style="{StaticResource CheckoutButton}" Width="150" Click="btnCheckout_Click" />
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </Window>

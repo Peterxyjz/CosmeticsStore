@@ -225,6 +225,12 @@ namespace CosmeticsStore.WPF
             // Load Category dưới db lên Popup Listbox để chuẩn bị cho việc Show
             LoadCategories();
 
+            // Đảm bảo popup xuất hiện dưới nút Categories
+            categoryPopup.PlacementTarget = btnCategories;
+            categoryPopup.Placement = PlacementMode.Bottom;
+            categoryPopup.HorizontalOffset = 0;
+            categoryPopup.VerticalOffset = 5;
+
             // Show cái Popup Listbox toàn bộ Category
             categoryPopup.IsOpen = true;
         }
