@@ -79,13 +79,18 @@ namespace CosmeticsStore.WPF
                         Price = item.Price,
                         Quantity = item.Quantity,
                         Subtotal = item.Price * item.Quantity,
-                        ImageUrl = item.Product.ImageUrl
-
+                        ImageUrl = string.IsNullOrEmpty(item.Product.ImageUrl) ? 
+                                "pack://application:,,,/CosmeticsStore.WPF;component/Images/default.jpg" : 
+                                item.Product.ImageUrl
                     });
                 }
 
                 // Hiển thị danh sách trên ListView
                 lvCartItems.ItemsSource = _cartItems;
+                
+                // Cập nhật số lượng sản phẩm
+                int totalItems = _cartItems.Sum(item => item.Quantity);
+                txtItemCount.Text = totalItems == 1 ? "1 item in your cart" : $"{totalItems} items in your cart";
             }
             catch (Exception ex)
             {
@@ -187,6 +192,13 @@ namespace CosmeticsStore.WPF
         // MỚI IMPLEMENTED
         private void btnCheckout_Click(object sender, RoutedEventArgs e)
         {
+            // Kiểm tra giỏ hàng trống
+            if (!_cartItems.Any())
+            {
+                MessageBox.Show("Your cart is empty", "Empty Cart", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
             // Khi click nút Checkout, hiển thị dialog xác nhận Checkout
             if (MessageBox.Show("Proceed to checkout?", "Checkout", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {

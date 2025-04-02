@@ -36,6 +36,11 @@ namespace CosmeticsStore.WPF
                 "Momo"
             };
             cmbPaymentMethod.SelectedIndex = 0;
+            
+            // Giả lập giá trị cho order summary để UI hiển thị
+            txtSubtotal.Text = "$150.00";
+            txtShipping.Text = "$5.00";
+            txtTotal.Text = "$155.00";
         }
 
         private void btnConfirmOrder_Click(object sender, RoutedEventArgs e)
@@ -45,6 +50,7 @@ namespace CosmeticsStore.WPF
             {
                 MessageBox.Show("Please enter a valid shipping address.",
                     "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                txtShippingAddress.Focus();
                 return;
             }
 
@@ -53,6 +59,7 @@ namespace CosmeticsStore.WPF
             {
                 MessageBox.Show("Please select a payment method.",
                     "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                cmbPaymentMethod.Focus();
                 return;
             }
 
