@@ -234,10 +234,14 @@ namespace CosmeticsStore.WPF
             try
             {
                 // Clear all categories except the "All Categories" item at index 0
-                while (categoryListBox.Items.Count > 1)
-                {
-                    categoryListBox.Items.RemoveAt(1);
-                }
+                categoryListBox.Items.Clear();
+                
+                // Add "All Categories" item first
+                ListBoxItem allCategoryItem = new ListBoxItem();
+                allCategoryItem.Content = "All Categories";
+                allCategoryItem.Padding = new Thickness(15, 10, 15, 10);
+                allCategoryItem.Tag = 0;
+                categoryListBox.Items.Add(allCategoryItem);
 
                 // Lấy Category dưới db
                 var categories = _categoryService.GetAllCategories();
@@ -247,7 +251,7 @@ namespace CosmeticsStore.WPF
                 {
                     ListBoxItem item = new ListBoxItem();
                     item.Content = category.CategoryName;
-                    item.Padding = new Thickness(8, 5, 8, 5);
+                    item.Padding = new Thickness(15, 10, 15, 10);
                     item.Tag = category.CategoryId; // Store CategoryId in Tag
                     categoryListBox.Items.Add(item);
                 }

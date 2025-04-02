@@ -47,6 +47,14 @@ namespace CosmeticsStore.WPF
             UpdateTotalUser();
         }
 
+        private void btnDashboard_Click(object sender, RoutedEventArgs e)
+        {
+            // Already on dashboard, no need to navigate
+            // Could refresh dashboard data if needed
+            UpdateTotalProducts();
+            UpdateTotalUser();
+        }
+
         private void btnProducts_Click(object sender, RoutedEventArgs e)
         {
             // Navigate to Product Management
