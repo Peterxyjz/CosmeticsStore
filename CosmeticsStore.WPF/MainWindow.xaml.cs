@@ -345,6 +345,20 @@ namespace CosmeticsStore.WPF
                         // Nếu không có ImageUrl, sử dụng default image
                         product.ImageUrl = "pack://application:,,,/CosmeticsStore.WPF;component/Images/default.jpg";
                     }
+                    else if (product.ImageUrl.StartsWith("D:\\"))
+                    {
+                        // Nếu đường dẫn là đường dẫn tuyệt đối, kiểm tra file có tồn tại không
+                        if (File.Exists(product.ImageUrl))
+                        {
+                            // Cập nhật đường dẫn thành pack URI
+                            string fileName = System.IO.Path.GetFileName(product.ImageUrl);
+                            product.ImageUrl = $"pack://application:,,,/CosmeticsStore.WPF;component/Images/{fileName}";
+                        }
+                        else
+                        {
+                            product.ImageUrl = "pack://application:,,,/CosmeticsStore.WPF;component/Images/default.jpg";
+                        }
+                    }
                     else if (!ImageExists(product.ImageUrl))   // tạo hàm ImageExists để kiểm tra
                     {
                         // Nếu ImageUrl không hợp lệ hoặc hình ảnh không tồn tại, sử dụng default image
@@ -462,6 +476,12 @@ namespace CosmeticsStore.WPF
         {
             try
             {
+                // Nếu đường dẫn là đường dẫn vật lý đến file ảnh
+                if (packUri.StartsWith("D:\\") && File.Exists(packUri))
+                {
+                    return true;
+                }
+
                 // Tạo Uri từ chuỗi pack URI
                 Uri uri = new Uri(packUri, UriKind.Absolute);
 
