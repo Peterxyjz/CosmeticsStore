@@ -13,6 +13,7 @@ namespace CosmeticsStore.WPF
     public partial class UserManagementWindow : Window
     {
         private readonly IUserService _userService;
+        private bool isEditMode = false;
 
         public UserManagementWindow()
         {
@@ -25,6 +26,8 @@ namespace CosmeticsStore.WPF
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             LoadUserList();
+            ResetInput();
+            SetCreateMode();
         }
 
         private void LoadUserList()
@@ -45,9 +48,47 @@ namespace CosmeticsStore.WPF
             txtUserID.Text = "";
             txtUsername.Text = "";
             txtEmail.Text = "";
-            txtPassword.Text = "";
+            txtPassword.Password = "";
             cboRole.SelectedIndex = 0;
             cboStatus.SelectedIndex = 0;
+        }
+
+        private void SetCreateMode()
+        {
+            isEditMode = false;
+            txtUsername.IsEnabled = true;
+            txtEmail.IsEnabled = true;
+            txtPassword.IsEnabled = true;
+            btnCreate.Content = "Create";
+            btnUpdate.IsEnabled = false;
+            ResetInput();
+        }
+
+        private void SetEditMode()
+        {
+            isEditMode = true;
+            txtUsername.IsEnabled = false;
+            txtEmail.IsEnabled = false;
+            txtPassword.IsEnabled = false;
+            btnUpdate.IsEnabled = true;
+        }
+
+        private void dgUsers_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dgUsers.SelectedItem is User user)
+            {
+                txtUserID.Text = user.UserId.ToString();
+                txtUsername.Text = user.Username;
+                // Note: Password is not shown for security reasons
+                txtPassword.Password = "********"; // Masked password
+                txtEmail.Text = user.Email;
+                cboRole.Text = user.Role;
+                cboStatus.SelectedIndex = user.Status.HasValue
+                    ? (user.Status.Value ? 0 : 1)
+                    : 0;
+
+                SetEditMode();
+            }
         }
 
         private void btnCreate_Click(object sender, RoutedEventArgs e)
@@ -56,7 +97,7 @@ namespace CosmeticsStore.WPF
             {
                 if (string.IsNullOrWhiteSpace(txtUsername.Text) ||
                     string.IsNullOrWhiteSpace(txtEmail.Text) ||
-                    string.IsNullOrWhiteSpace(txtPassword.Text))
+                    string.IsNullOrWhiteSpace(txtPassword.Password))
                 {
                     MessageBox.Show("Please fill in all required fields.");
                     return;
@@ -66,7 +107,7 @@ namespace CosmeticsStore.WPF
                 {
                     Username = txtUsername.Text,
                     Email = txtEmail.Text,
-                    Password = txtPassword.Text,
+                    Password = txtPassword.Password,
                     Role = cboRole.Text,
                     Status = cboStatus.Text == "Active",
                     CreatedDate = DateTime.Now
@@ -76,25 +117,11 @@ namespace CosmeticsStore.WPF
                 MessageBox.Show("User added successfully!");
                 LoadUserList();
                 ResetInput();
+                SetCreateMode();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error adding user: {ex.Message}");
-            }
-        }
-
-        private void dgUsers_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (dgUsers.SelectedItem is User user)
-            {
-                txtUserID.Text = user.UserId.ToString();
-                txtUsername.Text = user.Username;
-                txtEmail.Text = user.Email;
-                txtPassword.Text = user.Password;
-                cboRole.Text = user.Role;
-                cboStatus.SelectedIndex = user.Status.HasValue
-      ? (user.Status.Value ? 0 : 1)
-      : 0; // Hoặc bạn có thể chọn giá trị mặc định khác
             }
         }
 
@@ -104,19 +131,25 @@ namespace CosmeticsStore.WPF
             {
                 if (int.TryParse(txtUserID.Text, out int userId))
                 {
-                    var user = new User
+                    // Get the existing user first
+                    User existingUser = _userService.GetUserById(userId);
+                    if (existingUser == null)
                     {
-                        UserId = userId,
-                        Username = txtUsername.Text,
-                        Email = txtEmail.Text,
-                        Password = txtPassword.Text,
-                        Role = cboRole.Text,
-                        Status = cboStatus.Text == "Active"
-                    };
+                        MessageBox.Show("User not found.");
+                        return;
+                    }
 
-                    _userService.UpdateUser(user);
+                    // Only update role and status
+                    existingUser.Role = cboRole.Text;
+                    existingUser.Status = cboStatus.Text == "Active";
+
+                    _userService.UpdateUser(existingUser);
                     MessageBox.Show("User updated successfully!");
                     LoadUserList();
+                    
+                    // Reset the form after update
+                    ResetInput();
+                    SetCreateMode();
                 }
                 else
                 {
@@ -129,33 +162,11 @@ namespace CosmeticsStore.WPF
             }
         }
 
-        private void btnDelete_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (int.TryParse(txtUserID.Text, out int userId))
-                {
-                    _userService.DeleteUser(userId);
-                    MessageBox.Show("User deleted successfully!");
-                    LoadUserList();
-                    ResetInput();
-                }
-                else
-                {
-                    MessageBox.Show("Please select a user to delete.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error deleting user: {ex.Message}");
-            }
-        }
-
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
-            AdminWindow adminWindow = new AdminWindow(); // Tạo cửa sổ AdminWindow
-            adminWindow.Show(); // Hiển thị AdminWindow
-            this.Close(); // Đóng cửa sổ hiện tại
+            AdminWindow adminWindow = new AdminWindow();
+            adminWindow.Show();
+            this.Close();
         }
     }
 }

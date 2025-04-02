@@ -1,10 +1,10 @@
-﻿<Window x:Class="CosmeticsStore.WPF.MainWindow"
+<Window x:Class="CosmeticsStore.WPF.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Cosmetics Store" Height="600" Width="1000" 
-        WindowStartupLocation="CenterScreen"
-        >
+        Title="Cosmetics Store" Height="750" Width="1100" 
+        WindowStartupLocation="CenterScreen">
     <Window.Resources>
+        <!-- Navigation Button Style -->
         <Style x:Key="NavButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="#FF333333"/>
@@ -15,11 +15,14 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" 
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                BorderBrush="{TemplateBinding BorderBrush}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
+                        <Grid>
+                            <Border Background="{TemplateBinding Background}" 
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    CornerRadius="4">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </Grid>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -32,269 +35,401 @@
             </Style.Triggers>
         </Style>
 
+        <!-- Product Card Style -->
+        <Style x:Key="ProductCard" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FFEEEEEE"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Margin" Value="8"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#20000000" BlurRadius="10" ShadowDepth="1" Opacity="0.3"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ListBox Item Style -->
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <ContentPresenter/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        </Style>
+
+        <!-- Product Button Style -->
+        <Style x:Key="ProductButton" TargetType="Button">
+            <Setter Property="Background" Value="#FF5C8D89"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF4A7C78"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <!-- Logout Button Style -->
+        <Style x:Key="LogoutButton" TargetType="Button">
+            <Setter Property="Background" Value="#FF5C8D89"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Width" Value="80"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="5" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF4A7C78"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="60"/>
+            <RowDefinition Height="70"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- Header/Navigation Bar -->
-        <Border Grid.Row="0" Background="White" BorderBrush="#FFE0E0E0" BorderThickness="0,0,0,1">
+        <Border Grid.Row="0" Background="White" BorderBrush="#FFE0E0E0" BorderThickness="0,0,0,1" Effect="{Binding Mode=OneWay, Source={StaticResource {x:Static SystemParameters.DropShadowKey}}}">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="220"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <!-- Logo -->
-                <TextBlock Grid.Column="0" Text="COSMETICS" FontSize="20" FontWeight="Bold" 
-                           Foreground="#FF5C8D89" VerticalAlignment="Center" Margin="20,0,0,0"/>
-
-                <!-- Navigation Items -->
-                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left">
-                    
-                    <!--<Button Content="Products" Style="{StaticResource NavButton}" Click="btnProducts_Click"/>-->
-                    <Button Content="Categories" Style="{StaticResource NavButton}" Click="btnCategories_Click"/>
-                    <Button Content="My Cart" Style="{StaticResource NavButton}" Click="btnCart_Click"/>
-                    <Button Content="My Orders" Style="{StaticResource NavButton}" Click="btnOrders_Click"/>
-
-                    <!-- Category Popup -->
-                    <Popup x:Name="categoryPopup"
-                           PlacementTarget="{Binding ElementName=btnCategories}"
-                           Placement="Bottom"
-                           AllowsTransparency="True"
-                           PopupAnimation="Fade"
-                           StaysOpen="False">
-                        <Border BorderBrush="LightGray"
-                                BorderThickness="1"
-                                Background="White"
-                                CornerRadius="8"
-                                Padding="2">
-                            <!-- Increased corner radius for a more modern look -->
-                            <Border.Effect>
-                                <DropShadowEffect Color="Gray"
-                                                  Direction="315"
-                                                  ShadowDepth="4"
-                                                  BlurRadius="8"
-                                                  Opacity="0.4" />
-                                <!-- Enhanced shadow effect -->
-                            </Border.Effect>
-                            <StackPanel Width="220"
-                                        Background="White">
-                                <!-- Slightly wider for better spacing -->
-                                <!-- Title -->
-                                <Border BorderBrush="LightGray"
-                                        BorderThickness="0,0,0,1"
-                                        Background="#FF5C8D89">
-                                    <!-- Matching the app's color scheme -->
-                                    <TextBlock Text="Select Category"
-                                               FontWeight="SemiBold"
-                                               Foreground="White"
-                                               Padding="10,10,10,8"
-                                               FontSize="14" />
-                                    <!-- Better padding and text color -->
-                                </Border>
-
-                                <!-- Category ListBox -->
-                                <!-- Category ListBox -->
-                                <ListBox x:Name="categoryListBox"
-                                         MaxHeight="300"
-                                         BorderThickness="0"
-                                         SelectionChanged="CategoryListBox_SelectionChanged"
-                                         Margin="0,4,0,0">
-                                    <ListBox.ItemContainerStyle>
-                                        <Style TargetType="ListBoxItem">
-                                            <Setter Property="Padding"
-                                                    Value="10,8,10,8" />
-                                            <Setter Property="Cursor"
-                                                    Value="Hand" />
-                                            <Setter Property="FontWeight"
-                                                    Value="SemiBold" />
-                                            <!-- Making text bolder -->
-                                            <Setter Property="FontSize"
-                                                    Value="14" />
-                                            <!-- Increasing font size -->
-                                            <Style.Triggers>
-                                                <Trigger Property="IsMouseOver"
-                                                         Value="True">
-                                                    <Setter Property="Background"
-                                                            Value="#FFF5F5F5" />
-                                                    <Setter Property="Foreground"
-                                                            Value="#FF5C8D89" />
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ListBox.ItemContainerStyle>
-                                    <ListBoxItem Content="All Categories"
-                                                 Tag="0" />
-                                </ListBox>
-
-                                <!-- Separator -->
-                                <Separator Margin="8,2,8,2" />
-
-                                <!-- Close Button -->
-                                <!-- Close Button -->
-                                <Button Content="Close"
-                                        Margin="8,6,8,8"
-                                        HorizontalAlignment="Right"
-                                        Click="ClosePopupButton_Click"
-                                        Padding="15,7"
-                                        Width="80"
-                                        Background="#FF5C8D89"
-                                        Foreground="White"
-                                        FontWeight="SemiBold">
-                                    <Button.Template>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border Background="{TemplateBinding Background}"
-                                                    CornerRadius="6"
-                                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                                    BorderBrush="{TemplateBinding BorderBrush}">
-                                                <ContentPresenter HorizontalAlignment="Center"
-                                                                  VerticalAlignment="Center" />
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Button.Template>
-                                    <Button.Style>
-                                        <Style TargetType="Button">
-                                            <Style.Triggers>
-                                                <Trigger Property="IsMouseOver"
-                                                         Value="True">
-                                                    <Setter Property="Background"
-                                                            Value="#FF4A7C78" />
-                                                    <Setter Property="Effect">
-                                                        <Setter.Value>
-                                                            <DropShadowEffect Color="Gray"
-                                                                              Direction="315"
-                                                                              ShadowDepth="1"
-                                                                              BlurRadius="3"
-                                                                              Opacity="0.3" />
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
-                            </StackPanel>
-                        </Border>
-                    </Popup>
-                    
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0,0,0">
+                    <TextBlock Text="COSMETICS" FontSize="20" FontWeight="Bold" Foreground="#FF5C8D89"/>
+                    <TextBlock Text="STORE" FontSize="20" Foreground="#FF5C8D89" Margin="5,0,0,0"/>
                 </StackPanel>
 
-                <!-- User Controls -->
-                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,20,0">
-                    <TextBlock x:Name="txtWelcome" Text="Welcome" VerticalAlignment="Center" 
-                               FontWeight="SemiBold" Margin="0,0,15,0"/>
-                    <Button Content="Logout" Background="#FF5C8D89" Foreground="White" 
-                            Padding="10,5" BorderThickness="0" Click="btnLogout_Click" Height="24" Width="44">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border Background="{TemplateBinding Background}" 
-                                        CornerRadius="5" 
-                                        BorderThickness="{TemplateBinding BorderThickness}"
-                                        BorderBrush="{TemplateBinding BorderBrush}">
-                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Border>
-                            </ControlTemplate>
-                        </Button.Template>
+                <!-- Categories Button -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Button Content="Categories" Style="{StaticResource NavButton}" Click="btnCategories_Click">
+                        <Button.ContentTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="▼" FontSize="10" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </Button.ContentTemplate>
                     </Button>
                 </StackPanel>
+                <Popup x:Name="categoryPopup"
+       PlacementTarget="{Binding ElementName=btnCategories}"
+       Placement="Bottom"
+       AllowsTransparency="True"
+       PopupAnimation="Fade"
+       StaysOpen="False">
+                    <Border BorderBrush="#FFDDDDDD"
+            BorderThickness="1"
+            Background="White"
+            CornerRadius="0"
+            Width="250">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <!-- Title -->
+                                <RowDefinition Height="*"/>
+                                <!-- Items -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- Button -->
+                            </Grid.RowDefinitions>
+
+                            <!-- Title -->
+                            <Border Grid.Row="0" Background="#FF5C8D89">
+                                <TextBlock Text="SELECT CATEGORY"
+                           FontWeight="SemiBold"
+                           Foreground="White"
+                           Padding="15,12"
+                           FontSize="14" />
+                            </Border>
+
+                            <!-- Category ListBox -->
+                            <ListBox x:Name="categoryListBox"
+                     Grid.Row="1"
+                     BorderThickness="0"
+                     SelectionChanged="CategoryListBox_SelectionChanged"
+                     Margin="0"
+                     Padding="0"
+                     Background="White">
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Padding"
+                                Value="15,10" />
+                                        <Setter Property="Cursor"
+                                Value="Hand" />
+                                        <Setter Property="FontWeight"
+                                Value="SemiBold" />
+                                        <Setter Property="FontSize"
+                                Value="14" />
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                                <Setter Property="Background"
+                                        Value="#FFF5F5F5" />
+                                                <Setter Property="Foreground"
+                                        Value="#FF5C8D89" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                                <ListBoxItem Content="All Categories"
+                             Tag="0" />
+                            </ListBox>
+
+                            <!-- Close Button -->
+                            <Button Grid.Row="2"
+                    Content="Close"
+                    Margin="0,8,8,8"
+                    HorizontalAlignment="Right"
+                    Click="ClosePopupButton_Click"
+                    Padding="10,6"
+                    Width="80"
+                    Background="#FF5C8D89"
+                    Foreground="White"
+                    FontWeight="SemiBold">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="4"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}">
+                                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                                <Setter Property="Background"
+                                        Value="#FF4A7C78" />
+                                                <Setter Property="Cursor"
+                                        Value="Hand" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </Grid>
+                    </Border>
+                </Popup>
+
+                <!-- User Controls -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,25,0">
+                    <Button Content="My Cart" Style="{StaticResource NavButton}" Click="btnCart_Click" Margin="0,0,5,0">
+                        <Button.ContentTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="🛒" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </Button.ContentTemplate>
+                    </Button>
+                    <Button Content="My Orders" Style="{StaticResource NavButton}" Click="btnOrders_Click" Margin="0,0,15,0">
+                        <Button.ContentTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="📋" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </Button.ContentTemplate>
+                    </Button>
+                    <TextBlock x:Name="txtWelcome" Text="Welcome" VerticalAlignment="Center" 
+                               FontWeight="SemiBold" Foreground="#FF5C8D89" Margin="0,0,15,0"/>
+                    <Button Content="Logout" Style="{StaticResource LogoutButton}" Click="btnLogout_Click"/>
+                </StackPanel>
+                
             </Grid>
         </Border>
 
         <!-- Main Content Area -->
         <Border Grid.Row="1" Background="#FFF8F9FA">
-            <ContentControl x:Name="mainContent" Margin="20">
-                <!-- Welcome Banner -->
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <Border Grid.Row="0" Background="#FF5C8D89" CornerRadius="10" Padding="30">
-                        <StackPanel>
-                            <TextBlock Text="Welcome to Cosmetics Store" FontSize="28" FontWeight="Bold" 
-                                       Foreground="White" Margin="0,0,0,10"/>
-                            <TextBlock Text="Discover our wide range of premium beauty products" 
-                                       FontSize="16" Foreground="White" TextWrapping="Wrap"/>
-                            <Button Content="SHOP NOW" Background="White" Foreground="#FF5C8D89" 
-                                    FontWeight="Bold" Padding="15,8" Margin="0,20,0,0" 
-                                    HorizontalAlignment="Left" Click="btnProducts_Click">
-                                <Button.Template>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border Background="{TemplateBinding Background}" 
-                                                CornerRadius="5" 
-                                                BorderThickness="{TemplateBinding BorderThickness}"
-                                                BorderBrush="{TemplateBinding BorderBrush}">
-                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Button.Template>
-                            </Button>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Featured Products Section (Placeholder) -->
-                    <Grid Grid.Row="1" Margin="0,20,0,0">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ContentControl x:Name="mainContent" Margin="30,20,30,30">
+                    <!-- Main Content -->
+                    <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <TextBlock x:Name="txtFeaturedProducts" Grid.Row="0" Text="Featured Products" FontSize="22" 
-                                   FontWeight="SemiBold" Margin="0,0,0,15"/>
-
-                        <TextBlock Grid.Row="1" Text="Products will be displayed here" 
-                                   FontSize="18" Foreground="#FF6D6D6D" 
-                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <!--<Image x:Name="imgCleanser" HorizontalAlignment="Left" Height="112" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="117"/>-->
-                        <ListBox x:Name="lbProduct" SelectionChanged="ProductListBox_SelectionChanged" Margin="0,44,0,0" Grid.RowSpan="2">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <!-- Mỗi item là một StackPanel chứa hình ảnh, tên và giá -->
-                                    <StackPanel Orientation="Vertical" Width="150" Margin="10">
-                                        <!-- Hình ảnh sản phẩm -->
-                                        <Image Source="{Binding ImageUrl}" Width="120" Height="120" />
-                                        <!-- Tên sản phẩm -->
-                                        <TextBlock Text="{Binding ProductName}" HorizontalAlignment="Center" FontWeight="Bold" />
-                                        <!-- Giá sản phẩm -->
-                                        <TextBlock Text="{Binding Price, StringFormat='{}{0:C}'}" HorizontalAlignment="Center" />
-                                        <!-- Nút Add to Cart -->
-                                        <Button Content="Add to Cart" 
-                                            Background="#FF5C8D89" 
-                                            Foreground="White" 
-                                            Padding="10,5" 
-                                            Margin="0,5,0,0"
-                                            Click="btnAddToCart_Click"
-                                            Tag="{Binding ProductId}">
-                                            <Button.Template>
-                                                <ControlTemplate TargetType="Button">
-                                                    <Border Background="{TemplateBinding Background}" 
-                                                        CornerRadius="5" 
+                        <!-- Hero Banner -->
+                        <Border Grid.Row="0" Background="#FF5C8D89" CornerRadius="12" Margin="0,0,0,30">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <!-- Banner Text -->
+                                <StackPanel Grid.Column="0" Margin="40,40,0,40">
+                                    <TextBlock Text="Welcome to" FontSize="18" FontWeight="Medium" 
+                                            Foreground="#AAFFFFFF" Margin="0,0,0,5"/>
+                                    <TextBlock Text="COSMETICS STORE" FontSize="36" FontWeight="Bold" 
+                                            Foreground="White" Margin="0,0,0,20"/>
+                                    <TextBlock Text="Discover our wide range of premium beauty products" 
+                                            FontSize="16" Foreground="White" TextWrapping="Wrap" 
+                                            Margin="0,0,0,30" MaxWidth="450"/>
+                                    <Button Content="SHOP NOW" Background="White" Foreground="#FF5C8D89" 
+                                            FontWeight="Bold" Padding="20,12" Margin="0,10,0,0" 
+                                            FontSize="14" HorizontalAlignment="Left" Click="btnProducts_Click">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" 
+                                                        CornerRadius="6" 
                                                         BorderThickness="{TemplateBinding BorderThickness}"
                                                         BorderBrush="{TemplateBinding BorderBrush}">
-                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                    </Border>
-                                                </ControlTemplate>
-                                            </Button.Template>
-                                        </Button>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                            <!-- Sắp xếp các item theo dạng lưới -->
-                            <ListBox.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel />
-                                </ItemsPanelTemplate>
-                            </ListBox.ItemsPanel>
-                        </ListBox>
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#FFF5F5F5"/>
+                                                        <Setter Property="Effect">
+                                                            <Setter.Value>
+                                                                <DropShadowEffect Color="White" Direction="315" ShadowDepth="1" BlurRadius="5" Opacity="0.5"/>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </StackPanel>
+                                
+                                <!-- Decorative Image -->
+                                <Border Grid.Column="1" CornerRadius="0,12,12,0" Margin="20,0,0,0">
+                                    <Border.Background>
+                                        <ImageBrush Stretch="UniformToFill" ImageSource="pack://application:,,,/CosmeticsStore.WPF;component/Images/default.jpg" Opacity="0.5"/>
+                                    </Border.Background>
+                                    <Border Background="#50000000" Width="300"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <!-- Featured Products Section -->
+                        <Grid Grid.Row="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Section Title -->
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
+                                <TextBlock x:Name="txtFeaturedProducts" Text="Featured Products" FontSize="24" 
+                                        FontWeight="SemiBold" Foreground="#FF333333"/>
+                                <Border Height="2" Background="#FF5C8D89" Width="40" VerticalAlignment="Center" Margin="15,5,0,0"/>
+                            </StackPanel>
+
+                            <!-- Products Grid -->
+                            <ListBox x:Name="lbProduct" Grid.Row="1" SelectionChanged="ProductListBox_SelectionChanged" 
+                                    Background="Transparent" BorderThickness="0">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <!-- Product Card -->
+                                        <Border Style="{StaticResource ProductCard}" Width="220">
+                                            <StackPanel>
+                                                <!-- Product Image -->
+                                                <Border Height="180" CornerRadius="6" Margin="0,0,0,15">
+                                                    <Border.Background>
+                                                        <ImageBrush ImageSource="{Binding ImageUrl}" Stretch="UniformToFill"/>
+                                                    </Border.Background>
+                                                </Border>
+                                                
+                                                <!-- Product Info -->
+                                                <TextBlock Text="{Binding ProductName}" FontWeight="SemiBold" 
+                                                        FontSize="16" TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="{Binding Category.CategoryName}" Foreground="#FF6D6D6D" 
+                                                        Margin="0,5,0,0" FontSize="13"/>
+                                                <Grid Margin="0,12,0,0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    
+                                                    <!-- Price -->
+                                                    <TextBlock Grid.Column="0" Text="{Binding Price, StringFormat='{}{0:C}'}" 
+                                                            FontWeight="Bold" Foreground="#FF5C8D89" FontSize="16" 
+                                                            VerticalAlignment="Center"/>
+                                                    
+                                                    <!-- Add to Cart Button -->
+                                                    <Button Grid.Column="1" Content="Add to Cart" Style="{StaticResource ProductButton}"
+                                                            HorizontalAlignment="Right" Width="90"
+                                                            Click="btnAddToCart_Click" Tag="{Binding ProductId}">
+                                                        <Button.ContentTemplate>
+                                                            <DataTemplate>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <TextBlock Text="🛒" FontSize="12" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                                                    <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </Button.ContentTemplate>
+                                                    </Button>
+                                                </Grid>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                            </ListBox>
+                        </Grid>
                     </Grid>
-                </Grid>
-            </ContentControl>
+                </ContentControl>
+            </ScrollViewer>
         </Border>
     </Grid>
 </Window>
