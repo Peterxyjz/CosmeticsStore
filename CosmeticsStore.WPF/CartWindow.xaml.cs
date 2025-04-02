@@ -6,6 +6,7 @@ using CosmeticsStore.Services.Implementations;
 using CosmeticsStore.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -71,6 +72,26 @@ namespace CosmeticsStore.WPF
 
                 foreach (var item in cartItems)
                 {
+                    var imageUrl = item.Product.ImageUrl;
+                    // Xử lý đường dẫn hình ảnh
+                    if (string.IsNullOrEmpty(imageUrl))
+                    {
+                        imageUrl = "pack://application:,,,/CosmeticsStore.WPF;component/Images/default.jpg";
+                    }
+                    else if (imageUrl.StartsWith("D:\\"))
+                    {
+                        // Nếu đường dẫn là đường dẫn tuyệt đối, tạo pack URI
+                        if (File.Exists(imageUrl))
+                        {
+                            string fileName = System.IO.Path.GetFileName(imageUrl);
+                            imageUrl = $"pack://application:,,,/CosmeticsStore.WPF;component/Images/{fileName}";
+                        }
+                        else
+                        {
+                            imageUrl = "pack://application:,,,/CosmeticsStore.WPF;component/Images/default.jpg";
+                        }
+                    }
+                    
                     _cartItems.Add(new CartItemViewModel
                     {
                         CartItemId = item.CartItemId,
@@ -79,9 +100,7 @@ namespace CosmeticsStore.WPF
                         Price = item.Price,
                         Quantity = item.Quantity,
                         Subtotal = item.Price * item.Quantity,
-                        ImageUrl = string.IsNullOrEmpty(item.Product.ImageUrl) ? 
-                                "pack://application:,,,/CosmeticsStore.WPF;component/Images/default.jpg" : 
-                                item.Product.ImageUrl
+                        ImageUrl = imageUrl
                     });
                 }
 

@@ -1,8 +1,14 @@
 -- Create Cosmetics Database
-CREATE DATABASE CosmeticsDB;
+USE [master]
+
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'CosmeticsDB')
+BEGIN
+    CREATE DATABASE [CosmeticsDB];
+END
 GO
 
-USE CosmeticsDB;
+USE [CosmeticsDB]
+
 GO
 
 -- Create Users Table
@@ -100,9 +106,7 @@ VALUES
 ('Volumizing Mascara', 2, 'Adds volume and length to lashes', 19.99, 60, 'pack://application:,,,/CosmeticsStore.WPF;component/Images/mascara.jpg'),
 ('Moisturizing Shampoo', 3, 'Hydrates and nourishes hair', 15.99, 80, 'pack://application:,,,/CosmeticsStore.WPF;component/Images/shampoo.jpg'),
 ('Floral Eau de Parfum', 4, 'Light floral fragrance with jasmine notes', 59.99, 40, 'pack://application:,,,/CosmeticsStore.WPF;component/Images/perfume.jpg'),
-('Nourishing Body Lotion', 5, 'Rich moisturizer for dry skin', 22.99, 90, 'pack://application:,,,/CosmeticsStore.WPF;component/Images/lotion.jpg'),
-('Test Default Image', 5, 'Wrong image package uri', 22.99, 90, 'con.jpg'),
-('Test Zero Stock', 5, 'Cannot add to Cart', 25.00, 0, 'con.jpg')
+('Nourishing Body Lotion', 5, 'Rich moisturizer for dry skin', 22.99, 90, 'pack://application:,,,/CosmeticsStore.WPF;component/Images/lotion.jpg');
 GO
 
 -- Create a manager account

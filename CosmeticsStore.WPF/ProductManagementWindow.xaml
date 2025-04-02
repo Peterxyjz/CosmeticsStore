@@ -173,9 +173,10 @@
                         </StackPanel>
                         
                         <StackPanel Orientation="Horizontal" Grid.Row="6" Margin="0,8">
-                            <Label Content="Image URL" Style="{StaticResource FieldLabel}"/>
-                            <TextBox x:Name="txtImageUrl" Style="{StaticResource InputField}"/>
-                        </StackPanel>
+                        <Label Content="Image URL" Style="{StaticResource FieldLabel}"/>
+                        <TextBox x:Name="txtImageUrl" Style="{StaticResource InputField}" Width="180"/>
+                            <Button x:Name="btnBrowseImage" Content="Browse..." Margin="5,0,0,0" Padding="10,8" Click="btnBrowseImage_Click" Style="{StaticResource NavButton}" Width="65"/>
+        </StackPanel>
                         
                         <StackPanel Orientation="Horizontal" Grid.Row="7" Margin="0,8">
                             <Label Content="Created Date" Style="{StaticResource FieldLabel}"/>

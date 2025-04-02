@@ -25,30 +25,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Images\cleanser.jpg">
+    <Resource Include="Images\cleanser.jpg" />
+    <Resource Include="Images\default.jpg" />
+    <Resource Include="Images\foundation.jpg" />
+    <Resource Include="Images\lotion.jpg" />
+    <Resource Include="Images\mascara.jpg" />
+    <Resource Include="Images\perfume.jpg" />
+    <Resource Include="Images\serum.jpg" />
+    <Resource Include="Images\shampoo.jpg" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Include="Images\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Images\default.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Images\foundation.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Images\lotion.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Images\mascara.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Images\perfume.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Images\serum.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Images\shampoo.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

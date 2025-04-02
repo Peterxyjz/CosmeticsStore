@@ -7,6 +7,9 @@ using CosmeticsStore.Repositories;
 using CosmeticsStore.Repositories.Models;
 using CosmeticsStore.Service.Interfaces;
 using CosmeticsStore.Services.Implementations;
+using Microsoft.Win32;
+using System.IO;
+using System.Windows.Media.Imaging;
 
 namespace CosmeticsStore.WPF
 {
@@ -76,6 +79,7 @@ namespace CosmeticsStore.WPF
             txtPrice.Text = "";
             txtUnitsInStock.Text = "";
             txtImageUrl.Text = "";
+            txtImageUrl.Tag = null;
             cboCategory.SelectedValue = null;
             cboStatus.SelectedIndex = 0;
             txtCreatedDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
@@ -104,12 +108,45 @@ namespace CosmeticsStore.WPF
                     Price = decimal.Parse(txtPrice.Text),
                     StockQuantity = short.Parse(txtUnitsInStock.Text),
                     CategoryId = (int)cboCategory.SelectedValue,
-                    ImageUrl = txtImageUrl.Text,
+                    ImageUrl = string.IsNullOrEmpty(txtImageUrl.Text) ? "pack://application:,,,/CosmeticsStore.WPF;component/Images/default.jpg" : txtImageUrl.Text,
                     CreatedDate = DateTime.Now,
                     Status = status
                 };
 
                 _productService.AddProduct(product);
+                
+                // Xử lý nếu có ảnh mới cần copy
+                if (txtImageUrl.Tag != null && txtImageUrl.Tag.ToString() == "new_image" && !string.IsNullOrEmpty(txtImageUrl.Text))
+                {
+                    // Lấy sản phẩm vừa tạo để biết ProductId
+                    var newProducts = _productService.GetAllProducts();
+                    var newlyAddedProduct = newProducts.OrderByDescending(p => p.ProductId).FirstOrDefault();
+                    
+                    if (newlyAddedProduct != null)
+                    {
+                        string selectedFilePath = txtImageUrl.Text;
+                        string imagesFolder = @"D:\idle\CosmeticsStore\CosmeticsStore.WPF\Images";
+                        
+                        // Đảm bảo thư mục tồn tại
+                        if (!Directory.Exists(imagesFolder))
+                        {
+                            Directory.CreateDirectory(imagesFolder);
+                        }
+
+                        // Tạo tên file mới dựa trên ProductId
+                        string extension = Path.GetExtension(selectedFilePath);
+                        string newFileName = $"product_{newlyAddedProduct.ProductId}{extension}";
+                        string newFilePath = Path.Combine(imagesFolder, newFileName);
+
+                        // Copy file và ghi đè nếu file đã tồn tại
+                        File.Copy(selectedFilePath, newFilePath, true);
+
+                        // Cập nhật đường dẫn ảnh trong database
+                        newlyAddedProduct.ImageUrl = GetPackUriPath(newFileName);
+                        _productService.UpdateProduct(newlyAddedProduct);
+                    }
+                }
+                
                 MessageBox.Show("Product added successfully!");
                 LoadProductList();
                 ResetInput();
@@ -204,6 +241,67 @@ namespace CosmeticsStore.WPF
             AdminWindow adminWindow = new AdminWindow(); // Tạo cửa sổ AdminWindow
             adminWindow.Show(); // Hiển thị AdminWindow
             this.Close(); // Đóng cửa sổ hiện tại
+        }
+        
+        // Phương thức để tạo đường dẫn package URI cho ảnh
+        private string GetPackUriPath(string fileName)
+        {
+            return $"pack://application:,,,/CosmeticsStore.WPF;component/Images/{fileName}";
+        }
+
+        private void btnBrowseImage_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Tạo OpenFileDialog để cho phép người dùng chọn ảnh
+                OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    Title = "Select Product Image",
+                    Filter = "Image files (*.jpg, *.jpeg, *.png, *.gif)|*.jpg;*.jpeg;*.png;*.gif",
+                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
+                };
+
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    string selectedFilePath = openFileDialog.FileName;
+                    string fileName = Path.GetFileName(selectedFilePath);
+
+                    // Kiểm tra nếu đang tạo sản phẩm mới hay đang cập nhật sản phẩm hiện có
+                    if (string.IsNullOrEmpty(txtProductID.Text))
+                    {
+                        // Trường hợp tạo mới sản phẩm - lưu tạm file path đầy đủ
+                        txtImageUrl.Text = selectedFilePath;
+                        txtImageUrl.Tag = "new_image"; // Đánh dấu rằng đây là ảnh mới cần copy
+                    }
+                    else
+                    {
+                        // Trường hợp cập nhật sản phẩm hiện có
+                        int productId = int.Parse(txtProductID.Text);
+                        string imagesFolder = @"D:\idle\CosmeticsStore\CosmeticsStore.WPF\Images";
+                        
+                        // Đảm bảo thư mục tồn tại
+                        if (!Directory.Exists(imagesFolder))
+                        {
+                            Directory.CreateDirectory(imagesFolder);
+                        }
+
+                        // Tạo tên file mới dựa trên ProductId
+                        string extension = Path.GetExtension(selectedFilePath);
+                        string newFileName = $"product_{productId}{extension}";
+                        string newFilePath = Path.Combine(imagesFolder, newFileName);
+
+                        // Copy file và ghi đè nếu file đã tồn tại
+                        File.Copy(selectedFilePath, newFilePath, true);
+
+                        // Cập nhật đường dẫn ảnh trong UI
+                        txtImageUrl.Text = GetPackUriPath(newFileName);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error selecting image: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }
